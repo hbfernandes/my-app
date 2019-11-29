@@ -1,12 +1,9 @@
 name: Java CI
-
-on: [push]
+on: push
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 1.8
@@ -15,3 +12,8 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package
+    - name: Analyse with Sonar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: mvn -B sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=hbfernandes -Dsonar.branch.name=master
