@@ -1,5 +1,5 @@
 name: CI
-on: push                                        # triggers
+on: release                                        # triggers
 
 env:                                            # environment variables
   SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
@@ -16,7 +16,7 @@ jobs:
     needs: build                                
     runs-on: ubuntu-latest
     steps:
-    - name: Slack Message                     # Step 2.1 (action)
+    - name: Slack Message                       # Step 2.1 (action)
       uses: hbfernandes/slack-action@master   
       with:
         args: |

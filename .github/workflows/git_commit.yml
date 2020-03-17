@@ -1,0 +1,23 @@
+name: release check
+on: push                                        
+
+jobs:
+  build:                                        
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/github-script@0.8.0
+        with:
+          script: |
+            console.log(context.sha)
+            console.log(context.ref)
+            console.log(context.actor)
+
+            const result = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
+
+            console.log(result)
+
