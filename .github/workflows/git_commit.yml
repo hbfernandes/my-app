@@ -1,24 +1,19 @@
 name: release check
-on: 
-  schedule:
-    - cron: '*/5 * * * *'
-  push:
+on: repository_dispatch
 
 env:
   # RELEASE_MESSAGE: 'chore(release): publish'
   RELEASE_MESSAGE: 'release'
 
 jobs:
-  # this method should work with all events (scheduled and push)
+  # this method works with both scheduled and push events
   release-check:                                        
     runs-on: ubuntu-latest
     steps:
-      - name: Check 
+      - name: Release Check 
         uses: actions/github-script@0.8.0
         with:
           script: |
-            console.log('${{ github.event.head_commit.message }}')
-
             const commit = await github.repos.getCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -27,7 +22,7 @@ jobs:
 
             const message = commit.data.commit.message
             if(message.includes('${{ env.RELEASE_MESSAGE }}')){
-              console.log('A release of the current state has already been performed, not releasing.')
+              console.log('A release has already been performed, cancelling workflow...')
 
               await github.actions.cancelWorkflowRun({
                 owner: context.repo.owner,
