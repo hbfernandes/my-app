@@ -1,0 +1,35 @@
+name: release check
+on: 
+  repository_dispatch:
+    types: [run]
+  # release:
+  # schedule:
+  #   - cron: '*/5 * * * *'
+    
+env:
+  # RELEASE_MESSAGE: 'chore(release): publish'
+  RELEASE_MESSAGE: 'release'
+  RELEASE_BRANCH: dev
+
+jobs:
+  # this method works with both scheduled and push events
+  release-check:                                        
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Check 
+        uses: actions/github-script@0.8.0
+        with:
+          github-token: ${{ github.event.client_payload.token }}
+          script: |
+            console.log(context.repo)
+
+            await github.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'release',
+              client_payload: {
+                type: 'prerelease',
+                branch: 'alpha',
+                registry: 'http://url.to.the.thing'
+              }
+            })

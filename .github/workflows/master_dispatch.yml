@@ -1,0 +1,32 @@
+name: Master
+on: 
+  repository_dispatch:
+    types: [release]
+
+env:
+  DEFAULT_VALUE: default
+  PARAM_VALUE: ${{ github.event.client_payload.registry }}
+  VALUE: ${{ github.event.client_payload.registry:-env.DEFAULT_VALUE }} 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do things
+        run: |
+          echo $VALUE
+
+      - name: Log it
+        run: echo '${{ toJSON(github.event) }}'
+
+      # - uses: actions/github-script@0.8.0
+      #   with:
+      #     script: |
+      #       console.log()
+
+
+
+
+            
+
+
