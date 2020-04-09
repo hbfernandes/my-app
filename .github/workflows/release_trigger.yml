@@ -1,10 +1,11 @@
 name: release check
 on: 
-  repository_dispatch:
-    types: [run]
+  # repository_dispatch:
+  #   types: [run]
   # release:
   # schedule:
   #   - cron: '*/5 * * * *'
+  push:
     
 env:
   # RELEASE_MESSAGE: 'chore(release): publish'
@@ -19,17 +20,23 @@ jobs:
       - name: Release Check 
         uses: actions/github-script@0.8.0
         with:
-          github-token: ${{ github.event.client_payload.token }}
+          github-token: ${{ secrets.GIT_TOKEN }}
           script: |
-            console.log(context.repo)
+            console.log(context.ref)
 
-            await github.repos.createDispatchEvent({
+            //const commit = await github.repos.getCommit({
+            //  owner: 'pentaho',
+            //  repo: 'hv-uikit-react',
+            //  ref: 'heads/master'
+            //})
+            
+            //console.log(commit)
+
+            const branch = await github.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              event_type: 'release',
-              client_payload: {
-                type: 'prerelease',
-                branch: 'alpha',
-                registry: 'http://url.to.the.thing'
-              }
+              branch: context.ref
             })
+
+            const message = branch.data.commit.commit.message
+            console.log(message)
